@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "152663085070",
+    "project_id": "biove-fbee4",
+    "storage_bucket": "biove-fbee4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152663085070:android:be98e03a17954ad5f96c5f",
+        "android_client_info": {
+          "package_name": "life.ltv.biove"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "152663085070-s0gknq09vo7uekbj2l21q24k263g5l34.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "life.ltv.biove",
+            "certificate_hash": "ad713510aea9ed16ef431882a5eb62010d794767"
+          }
+        },
+        {
+          "client_id": "152663085070-0jo1qsfrn8fq845nkoolsdismp38q3p3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGzMzeCLMM0FMvd84dfRsPL9e6U4REq3E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "152663085070-0jo1qsfrn8fq845nkoolsdismp38q3p3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
