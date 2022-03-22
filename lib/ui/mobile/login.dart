@@ -22,7 +22,6 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   bool isLoading = false;
   GoogleAuthProvider googleProvider = GoogleAuthProvider();
-  // ignore: prefer_final_fields
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   _handleLoginGoogle() async{
     if(kIsWeb){
