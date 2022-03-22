@@ -10,8 +10,8 @@ class TypeOfTree {
   factory TypeOfTree.init(dynamic data){
     return TypeOfTree(
       id: data['_id'],
-      name: data['name'],
-      information: data['information'],
+      name: data['name'] ?? 'Chưa cập nhật',
+      information: data['information'] ?? 'Chưa cập nhật',
       price: data['price'],
       other: data['other'],
       images: data['images']

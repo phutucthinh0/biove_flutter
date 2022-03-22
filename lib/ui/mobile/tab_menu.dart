@@ -83,7 +83,11 @@ class _TabMenuState extends State<TabMenu> {
             SizedBox(height: 10),
             Card510Menu(title: "lang".tr, icon: Icons.language_outlined),
             SizedBox(height: 10),
-            Card510Menu(title: "logout".tr, icon: Icons.logout_outlined, onTap: ()=>db.logout(),),
+            if(!db.nullAccount())
+            Card510Menu(title:"logout".tr, icon: Icons.logout_outlined, onTap: (){
+              db.logout();
+              Get.back();
+            }),
           ],
         ),
       ),

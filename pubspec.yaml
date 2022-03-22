@@ -34,13 +34,14 @@ dependencies:
   flutter_map: ^0.14.0
   latlong2: ^0.8.1
   shared_preferences: ^2.0.9
-  firebase_core: "^1.5.0"
-  firebase_auth: "^3.0.2"
-  google_sign_in: "^5.0.0"
+  firebase_core: ^1.13.1
+  firebase_auth: ^3.3.11
+  google_sign_in: ^5.2.4
+  cloud_firestore: ^3.1.10
   map: ^1.0.0
   latlng: ^0.1.0
   url_strategy: ^0.2.0
-  video_player: ^2.2.7
+  video_player: ^2.3.0
   flutter_easyloading: ^3.0.3
   transformer_page_view_tv: ^0.1.7-nullsafety
   page_view_indicators: ^2.0.0

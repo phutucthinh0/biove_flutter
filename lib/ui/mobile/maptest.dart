@@ -441,8 +441,8 @@ class _MapTestState extends State<MapTest> {
                           // final url = "https://3.aerial.maps.api.here.com/maptile/2.1/maptile/9ab8a6c072/hybrid.day/${z}/${x}/${y}/512/png8?app_id=VgTVFr1a0ft1qGcLCVJ6&app_code=LJXqQ8ErW71UsRUK3R33Ow&lg=vie&ppi=72&pview=VNM";
                           final url = isBaseMap
                               // ?"https://tile.openstreetmap.org/${z}/${x}/${y}.png"
-                              ?"https://2.base.maps.api.here.com/maptile/2.1/maptile/9ab8a6c072/normal.day/${z}/${x}/${y}/512/png8?app_id=VgTVFr1a0ft1qGcLCVJ6&app_code=LJXqQ8ErW71UsRUK3R33Ow&lg=vie&ppi=72&pview=VNM"
-                              :"https://3.aerial.maps.api.here.com/maptile/2.1/maptile/9ab8a6c072/hybrid.day/${z}/${x}/${y}/512/png8?app_id=VgTVFr1a0ft1qGcLCVJ6&app_code=LJXqQ8ErW71UsRUK3R33Ow&lg=vie&ppi=72&pview=VNM";
+                              ?"https://2.base.maps.api.here.com/maptile/2.1/maptile/43f0c5fb7d/normal.day/${z}/${x}/${y}/512/png8?app_id=VgTVFr1a0ft1qGcLCVJ6&app_code=LJXqQ8ErW71UsRUK3R33Ow&lg=vie&ppi=72&pview=VNM"
+                              :"https://3.aerial.maps.api.here.com/maptile/2.1/maptile/43f0c5fb7d/hybrid.day/${z}/${x}/${y}/512/png8?app_id=VgTVFr1a0ft1qGcLCVJ6&app_code=LJXqQ8ErW71UsRUK3R33Ow&lg=vie&ppi=72&pview=VNM";
                           return Image.network(
                             url,
                             fit: BoxFit.cover,

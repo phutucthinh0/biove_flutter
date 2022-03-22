@@ -1,9 +1,7 @@
-import 'dart:html';
+// import 'dart:html';
 
 import 'package:biove/l10n/L10N.dart';
-import 'package:biove/ui/desktop/home.dart';
 import 'package:biove/ui/mobile/home.dart';
-import 'package:biove/ui/mobile/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -17,9 +15,8 @@ void main() async{
   await Firebase.initializeApp();
   await db.init();
   setPathUrlStrategy();
-  db.query = Uri.dataFromString(window.location.href).queryParameters;
+  // db.query = Uri.dataFromString(window.location.href).queryParameters;
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -40,6 +37,7 @@ class MyApp extends StatelessWidget {
         }
       },
       child: GetMaterialApp(
+        debugShowCheckedModeBanner: false,
         translations: L10N(),
         locale: Locale('vi', 'VN'),
         title: 'BIOVE - Trồng cây cho thế hệ mai sau',
