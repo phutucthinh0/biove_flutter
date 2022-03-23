@@ -1,0 +1,5 @@
+enum TransactionStatus{
+  GIAO_DICH_THANH_CONG,
+  NGUOI_DUNG_HUY_GIAO_DICH,
+  HET_THOI_GIAN
+}
