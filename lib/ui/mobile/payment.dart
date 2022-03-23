@@ -1,4 +1,6 @@
 import 'package:biove/data/db.dart';
+import 'package:biove/widgets/opacity_button.dart';
+import 'package:biove/widgets/payment_ui.dart';
 import 'package:biove/widgets/text_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -74,18 +76,23 @@ class _PaymentState extends State<Payment> {
               ]),
             ),
             Center(
-              child: Container(
-                width: Get.width - 80,
-                height: 55,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                    gradient: LinearGradient(
-                      colors: [Color(0xff294b6b), Color(0xff38a09d)],
-                      begin: FractionalOffset(0.0, 0.0),
-                      end: FractionalOffset(0.0, 1.0),
-                    )
+              child: OpacityButton(
+                onTap: (){
+                  Get.to(()=> PaymentScreen());
+                },
+                child: Container(
+                  width: Get.width - 80,
+                  height: 55,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                      gradient: LinearGradient(
+                        colors: [Color(0xff294b6b), Color(0xff38a09d)],
+                        begin: FractionalOffset(0.0, 0.0),
+                        end: FractionalOffset(0.0, 1.0),
+                      )
+                  ),
+                  child: Center(child: TextUI('XÁC NHẬN', color: Colors.white, fontWeight: FontWeight.bold,),),
                 ),
-                child: Center(child: TextUI('XÁC NHẬN', color: Colors.white, fontWeight: FontWeight.bold,),),
               ),
             )
           ],
