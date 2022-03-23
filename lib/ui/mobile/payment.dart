@@ -1,14 +1,16 @@
 import 'package:biove/data/db.dart';
+import 'package:biove/data/firestore_database.dart';
+import 'package:biove/models/type_of_tree.dart';
 import 'package:biove/widgets/opacity_button.dart';
-import 'package:biove/widgets/payment_ui.dart';
+import 'package:biove/ui/mobile/payment_screen.dart';
 import 'package:biove/widgets/text_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Payment extends StatefulWidget {
-  final String price;
+  final TypeOfTree typeOfTree;
 
-  const Payment({Key? key, required this.price}) : super(key: key);
+  const Payment({Key? key, required this.typeOfTree}) : super(key: key);
   @override
   _PaymentState createState() => _PaymentState();
 }
@@ -65,20 +67,21 @@ class _PaymentState extends State<Payment> {
                 SizedBox(height: 10),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
                   TextUI('Tên cây', color: Colors.green,),
-                  TextUI('Cây phượng'),
+                  TextUI(widget.typeOfTree.name),
                 ]),
                 SizedBox(height: 10),
                 Spacer(),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
                   TextUI('Tổng tiền', color: Colors.green,),
-                  TextUI(widget.price, fontWeight: FontWeight.bold, fontSize: 22,),
+                  TextUI(widget.typeOfTree.price, fontWeight: FontWeight.bold, fontSize: 22,),
                 ]),
               ]),
             ),
             Center(
               child: OpacityButton(
-                onTap: (){
-                  Get.to(()=> PaymentScreen());
+                onTap: ()async{
+                  final transaction = await Firestore.addTransaction(widget.typeOfTree);
+                  Get.off(()=> PaymentScreen(transaction));
                 },
                 child: Container(
                   width: Get.width - 80,

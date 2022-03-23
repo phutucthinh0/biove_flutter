@@ -138,7 +138,7 @@ class _PlantingPlaceInformationState extends State<PlantingPlaceInformation> {
             right: 35,
             bottom: 370,
             child: OpacityButton(
-              onTap: ()=>Get.to(()=>Payment(price: widget.typeOfTree.price,)),
+              onTap: ()=>Get.to(()=>Payment(typeOfTree: widget.typeOfTree)),
               child: Container(
                 width: 60,
                 height: 60,

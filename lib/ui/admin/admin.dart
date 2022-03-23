@@ -1,5 +1,6 @@
 import 'package:biove/controllers/admin_controller.dart';
 import 'package:biove/ui/admin/biove_map_admin.dart';
+import 'package:biove/ui/admin/biove_transaction_admin.dart';
 import 'package:biove/ui/mobile/maptest.dart';
 import 'package:biove/widgets/card_110_menu.dart';
 import 'package:biove/widgets/card_510_menu.dart';
@@ -32,6 +33,8 @@ class _AdminState extends State<Admin> {
           Card510Menu(title: "LOẠI CÂY TRỒNG", icon: Icons.category),
           SizedBox(height: 10),
           Card510Menu(title: "THÔNG TIN CÂY", icon: Icons.park),
+          SizedBox(height: 10),
+          Card510Menu(title: "QUẢN LÍ GIAO DỊCH", icon: Icons.park, onTap: ()=>Get.to(()=>BioveTransactionAdmin()),),
         ],
       ),
     );

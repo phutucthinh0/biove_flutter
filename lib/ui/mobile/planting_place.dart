@@ -94,7 +94,7 @@ class _PlantingPlaceState extends State<PlantingPlace> {
                         maxLines: 1,
                         style: TextStyle(color: Colors.white54),
                         decoration: InputDecoration(
-                            isDense: true, border: InputBorder.none, hintText: "Search for the trees here", hintStyle: TextStyle(fontSize: 18, color: Colors.white54), focusColor: Colors.white),
+                            isDense: true, border: InputBorder.none, hintText: "Tìm kiếm cây ở đây", hintStyle: TextStyle(fontSize: 18, color: Colors.white54), focusColor: Colors.white),
                       ),
                     ),
                   ),
