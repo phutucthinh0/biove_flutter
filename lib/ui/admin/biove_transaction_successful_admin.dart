@@ -1,25 +1,27 @@
 import 'dart:async';
 
+import 'package:biove/constants/transaction_status.dart';
 import 'package:biove/data/firestore_database.dart';
 import 'package:biove/models/transaction.dart';
 import 'package:biove/ui/admin/biove_tranaction_update_admin.dart';
 import 'package:biove/widgets/opacity_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../widgets/text_ui.dart';
 
-class BioveTransactionAdmin extends StatefulWidget {
+class BioveTransactionSuccessfulAdmin extends StatefulWidget {
 
   @override
-  _BioveTransactionAdminState createState() => _BioveTransactionAdminState();
+  _BioveTransactionSuccessfulAdminState createState() => _BioveTransactionSuccessfulAdminState();
 }
 
-class _BioveTransactionAdminState extends State<BioveTransactionAdmin> {
+class _BioveTransactionSuccessfulAdminState extends State<BioveTransactionSuccessfulAdmin> {
   late List<TransactionModel> _listTransactionModel;
-  List<int> _listTimer = [];
+  // List<int> _listTimer = [];
   bool _initialize = true;
-  Timer? timer;
+  // Timer? timer;
   @override
   void initState() {
     // TODO: implement initState
@@ -27,26 +29,7 @@ class _BioveTransactionAdminState extends State<BioveTransactionAdmin> {
     initStateAsync();
   }
   initStateAsync()async{
-    _listTimer = [];
-    _listTransactionModel = [];
-    if(timer!=null)timer!.cancel();
-    _listTransactionModel = await Firestore.getTransactionHolding();
-    for(int i=0; i< _listTransactionModel.length;i++){
-      _listTimer.add(900-(DateTime.now().millisecondsSinceEpoch - _listTransactionModel[i].date.millisecondsSinceEpoch)~/1000);
-      if(_listTimer[i]<0)_listTimer[i]=0;
-    }
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      for(int i=0; i< _listTimer.length;i++){
-        if(_listTimer[i]>0){
-          _listTimer[i]--;
-        }else{
-          _listTimer[i]=0;
-        }
-      }
-      setState(() {
-        _listTimer;
-      });
-    });
+    _listTransactionModel = await Firestore.getTransactionSuccessful();
     setState(() {
       _initialize = false;
     });
@@ -56,7 +39,7 @@ class _BioveTransactionAdminState extends State<BioveTransactionAdmin> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: Text('Giao dịch đang chờ'),
+        title: Text('Giao dịch thành công'),
       ),
       body: _initialize
           ? Container()
@@ -64,7 +47,6 @@ class _BioveTransactionAdminState extends State<BioveTransactionAdmin> {
                 itemCount: _listTransactionModel.length,
                 itemBuilder: (context, index) {
                   final item = _listTransactionModel[index];
-                  final countDown = _listTimer[index];
                   return OpacityButton(
                     onTap: ()async {
                       await Get.to(()=>BioveTransactionUpdateAdmin(item));
@@ -105,10 +87,10 @@ class _BioveTransactionAdminState extends State<BioveTransactionAdmin> {
                             width: 110,
                             height: 110,
                             decoration: BoxDecoration(
-                              color: countDown==0?Colors.red:Colors.green
+                              color: item.transactionStatus==TransactionStatus.successful?Colors.green:Colors.red
                             ),
                             child: Center(
-                              child: TextUI('${countDown ~/ 60}:${countDown % 60}', color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20,),
+                              child: TextUI((item.transactionStatus==TransactionStatus.successful?'Thành công':'Lỗi')+'\n${DateFormat('HH:mm\nd/MM/y').format(item.date)}', color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14, textAlign: TextAlign.center),
                             ),
                           )
                         ],
@@ -122,6 +104,5 @@ class _BioveTransactionAdminState extends State<BioveTransactionAdmin> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    timer!.cancel();
   }
 }

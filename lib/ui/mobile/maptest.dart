@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:biove/apis/handle_api.dart';
 import 'package:biove/constants/icon_trees.dart';
 import 'package:biove/controllers/biove_controller.dart';
@@ -10,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:latlng/latlng.dart';
 import 'package:map/map.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MapTest extends StatefulWidget {
   @override
@@ -19,15 +22,17 @@ class MapTest extends StatefulWidget {
 class _MapTestState extends State<MapTest> {
   final BioveController _bioveController = Get.find();
   late bool isBaseMap;
-  final controller = MapController(
+  MapController controller = MapController(
     location: LatLng(11.001059291521528, 107.23640188434801),
     zoom: 9.52,
   );
+  FocusNode _focusNode = FocusNode();
   List<dynamic> _listTrees = [];
   List<LatLng> markers = [];
   // NewTree
   List<dynamic> _listCacheNameID = [];
   List<dynamic> _listNewTrees = [];
+  List<dynamic> _listSearch = [];
   List<LatLng> markersNew = [];
   Widget _buildMarkerTreeNew(Offset pos, int i) {
     return Positioned(
@@ -113,6 +118,19 @@ class _MapTestState extends State<MapTest> {
                     textColor: Colors.white,
                   ),
                 ),
+                SizedBox(height: 20),
+                Center(
+                  child: ButtonUI(
+                    onTap: (){
+                      Get.back();
+                      launch("https://maps.google.com/?q=${_listNewTrees[index]['latitude']},${_listNewTrees[index]['longitude']}");
+                      // Get.to(()=>InfoTree(tree_id: _listNewTrees[index]['_id'],));
+                    },
+                    backgroundColor: Colors.blue,
+                    text: "  Đường đi  ",
+                    textColor: Colors.white,
+                  ),
+                ),
                 SizedBox(height: 5)
               ],
             ),
@@ -136,6 +154,24 @@ class _MapTestState extends State<MapTest> {
     super.initState();
     isBaseMap = _bioveController.isBaseMap.value;
     _handleGetMap(10.256035656626636, 11.755820115340057,  106.80851767513852, 107.5965634129621);
+  }
+
+  void _getSearch(String value)async{
+    if(value==""){
+    setState(() {
+      _listSearch = _listNewTrees;
+    });
+    }else{
+      _listSearch = [];
+      for (dynamic item in _listNewTrees){
+        if(item['owner'].toString().toLowerCase().contains(value.toLowerCase())){
+          _listSearch.add(item);
+        }
+      }
+      setState(() {
+        _listSearch;
+      });
+    }
   }
 
   void _onScaleUpdate(ScaleUpdateDetails details) {
@@ -441,8 +477,8 @@ class _MapTestState extends State<MapTest> {
                           // final url = "https://3.aerial.maps.api.here.com/maptile/2.1/maptile/9ab8a6c072/hybrid.day/${z}/${x}/${y}/512/png8?app_id=VgTVFr1a0ft1qGcLCVJ6&app_code=LJXqQ8ErW71UsRUK3R33Ow&lg=vie&ppi=72&pview=VNM";
                           final url = isBaseMap
                               // ?"https://tile.openstreetmap.org/${z}/${x}/${y}.png"
-                              ?"https://2.base.maps.api.here.com/maptile/2.1/maptile/43f0c5fb7d/normal.day/${z}/${x}/${y}/512/png8?app_id=VgTVFr1a0ft1qGcLCVJ6&app_code=LJXqQ8ErW71UsRUK3R33Ow&lg=vie&ppi=72&pview=VNM"
-                              :"https://3.aerial.maps.api.here.com/maptile/2.1/maptile/43f0c5fb7d/hybrid.day/${z}/${x}/${y}/512/png8?app_id=VgTVFr1a0ft1qGcLCVJ6&app_code=LJXqQ8ErW71UsRUK3R33Ow&lg=vie&ppi=72&pview=VNM";
+                              ?"https://2.base.maps.api.here.com/maptile/2.1/maptile/4e5f275107/normal.day/${z}/${x}/${y}/512/png8?app_id=VgTVFr1a0ft1qGcLCVJ6&app_code=LJXqQ8ErW71UsRUK3R33Ow&lg=vie&ppi=72&pview=VNM"
+                              :"https://3.aerial.maps.api.here.com/maptile/2.1/maptile/4e5f275107/hybrid.day/${z}/${x}/${y}/512/png8?app_id=VgTVFr1a0ft1qGcLCVJ6&app_code=LJXqQ8ErW71UsRUK3R33Ow&lg=vie&ppi=72&pview=VNM";
                           return Image.network(
                             url,
                             fit: BoxFit.cover,
@@ -459,6 +495,73 @@ class _MapTestState extends State<MapTest> {
               );
             },
           ),
+          Positioned(
+            top: 50,
+            left: 10,
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  width: Get.width-20,
+                  height: 45,
+                  decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(10)),
+                  child: Focus(
+                    child: TextFormField(
+                      maxLines: 1,
+                      focusNode: _focusNode,
+                      style: TextStyle(color: Colors.white54),
+                      onChanged: (value)=>_getSearch(value),
+                      decoration: InputDecoration(
+                          isDense: true, border: InputBorder.none, hintText: "Tìm kiếm cây ở đây", hintStyle: TextStyle(fontSize: 18, color: Colors.white54), focusColor: Colors.white),
+                    ),
+                    onFocusChange: (hasFocus){
+                      if(hasFocus){
+                        _getSearch("");
+                      }else{
+                        setState(() {
+                          _listSearch = [];
+                        });
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+          if(_listSearch.length>0)
+          Positioned(
+            top: 95,
+            left: 10,
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  width: Get.width-20,
+                  height: 500,
+                  decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(10)),
+                  child: ListView.builder(
+                    itemCount: _listNewTrees.length,
+                    itemBuilder: (context,index){
+                      return ButtonUI(
+                        text: _listNewTrees[index]['owner'],
+                        textColor: Colors.white,
+                        onTap: (){
+                          _focusNode.unfocus();
+                          controller = MapController(
+                            location: LatLng(_listNewTrees[index]['latitude'], _listNewTrees[index]['longitude']),
+                            zoom: 12,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          )
+
         ],
       ),
     );

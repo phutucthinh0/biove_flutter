@@ -1,5 +1,5 @@
-import 'dart:async';
 import 'dart:io';
+import 'package:biove/models/story.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:biove/apis/handle_api.dart';
@@ -11,6 +11,8 @@ import 'package:biove/widgets/text_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+
+import '../../models/comment.dart';
 
 class TabStories extends StatefulWidget {
   @override
@@ -26,7 +28,7 @@ class _TabStoriesState extends State<TabStories> {
   final _addStoryFocusNode = FocusNode();
   bool isAddStoryFocus = false;
   bool isPostingStory = false;
-  List<dynamic> _listStory = [];
+  List<Story> _listStory =[];
 
   @override
   void initState() {
@@ -36,8 +38,11 @@ class _TabStoriesState extends State<TabStories> {
 
   _getStory() {
     handleApi.GET('$root_url/story/get').then((data) {
+      for (dynamic item in data){
+        _listStory.add(Story.fromMap(item));
+      }
       setState(() {
-        _listStory = data;
+        _listStory;
       });
     });
   }
@@ -96,6 +101,20 @@ class _TabStoriesState extends State<TabStories> {
     setState(() {
       isHaveImagePicker = false;
     });
+  }
+  _like(int index)async{
+    setState(() {
+      _listStory[index].isAccountLike = true;
+    });
+    await handleApi.POST('$root_url/story/like', {'story_id':_listStory[index].id, 'user_id': db.getAccountId()});
+    _getStory();
+  }
+  _dislike(int index)async{
+    setState(() {
+      _listStory[index].isAccountLike = false;
+    });
+    await handleApi.POST('$root_url/story/dislike', {'story_id':_listStory[index].id, 'user_id': db.getAccountId()});
+    _getStory();
   }
 
   @override
@@ -272,7 +291,8 @@ class _TabStoriesState extends State<TabStories> {
   }
 
   Widget _buildItemNewsFeed(int index) {
-    final datetime = DateTime.fromMillisecondsSinceEpoch(_listStory[index]['date']);
+    final item = _listStory[index];
+    final datetime = item.date;
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final dateToCheck = DateTime(datetime.year, datetime.month, datetime.day);
@@ -284,7 +304,7 @@ class _TabStoriesState extends State<TabStories> {
     }
     final clockString = format.format(datetime);
     // return without media
-    if (_listStory[index]['media'] == null || _listStory[index]['media'] == "") {
+    if (item.media == null || item.media == "") {
       return Container(
         margin: EdgeInsets.only(top: 10, left: 20, right: 20),
         child: Column(
@@ -297,7 +317,7 @@ class _TabStoriesState extends State<TabStories> {
                   height: 35,
                   decoration: BoxDecoration(
                     color: Colors.green,
-                    image: DecorationImage(image: NetworkImage(_listStory[index]['author_photoURL']), fit: BoxFit.cover),
+                    image: DecorationImage(image: NetworkImage(item.author.photoURL), fit: BoxFit.cover),
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -305,7 +325,7 @@ class _TabStoriesState extends State<TabStories> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextUI(_listStory[index]['author_name'], color: Colors.black54, fontWeight: FontWeight.w600,fontSize: 18,),
+                    TextUI(item.author.name, color: Colors.black54, fontWeight: FontWeight.w600,fontSize: 18,),
                     SizedBox(height: 12),
                     TextUI(
                       clockString,
@@ -331,63 +351,23 @@ class _TabStoriesState extends State<TabStories> {
                     end: FractionalOffset(0.0, 1.0),
                   )),
               child: Center(
-                child: TextUI(_listStory[index]['body'], color: Colors.white, fontSize: 16),
+                child: TextUI(item.body, color: Colors.white, fontSize: 16),
               ),
             ),
             // SizedBox(height: 5),
             Row(
               children: [
                 SizedBox(width: 8),
-                IconButton(onPressed: () {}, icon: Icon(Icons.favorite_outlined, color: Colors.red)),
+                IconButton(onPressed: () =>item.isAccountLike?_dislike(index):_like(index), icon: Icon(Icons.favorite_outlined, color: item.isAccountLike?Colors.red:Colors.grey)),
                 IconButton(onPressed: () {}, icon: Icon(Icons.mode_comment_outlined, color: Colors.grey)),
                 IconButton(onPressed: () {}, icon: Icon(Icons.launch_outlined, color: Colors.grey))
               ],
             ),
-            TextUI("975.285 lượt thích", color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14,),
+            TextUI("${item.like.length} lượt thích", color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14,),
             SizedBox(
               height: 3,
             ),
-            Row(
-              children: [
-                TextUI("Thịnh Quốc Trần ", color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14,),
-                TextUI("đẹp quá đi hihihi", color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14),
-                Spacer(),
-                Container(
-                  height: 20,
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.favorite_outlined,
-                        color: Colors.grey,
-                        size: 15,
-                      )),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 3,
-            ),
-            Row(
-              children: [
-                TextUI("Thịnh Quốc Trần ", color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14,),
-                TextUI("đẹp quá ha hahaha", color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14),
-                Spacer(),
-                Container(
-                  height: 20,
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.favorite_outlined,
-                        color: Colors.grey,
-                        size: 15,
-                      )),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 3,
-            ),
-            TextUI("xem tất cả 25858 bình luận...", color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14,),
+            _buildComment(item.comment),
             SizedBox(
               height: 20,
             )
@@ -409,14 +389,14 @@ class _TabStoriesState extends State<TabStories> {
                 height: 35,
                 decoration: BoxDecoration(
                   color: Colors.green,
-                  image: DecorationImage(image: NetworkImage(_listStory[index]['author_photoURL']), fit: BoxFit.cover),
+                  image: DecorationImage(image: NetworkImage(item.author.photoURL), fit: BoxFit.cover),
                   shape: BoxShape.circle,
                 ),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextUI(_listStory[index]['author_name'], color: Colors.black54, fontWeight: FontWeight.w600, fontSize: 18),
+                  TextUI(item.author.name, color: Colors.black54, fontWeight: FontWeight.w600, fontSize: 18),
                   SizedBox(height: 8),
                   TextUI(
                     clockString,
@@ -429,90 +409,58 @@ class _TabStoriesState extends State<TabStories> {
             ],
           ),
           SizedBox(height: 5),
-          if (_listStory[index]['body'] != null || _listStory[index]['body'] != '')
+          if (item.body != null || item.body != '')
             TextUI(
-              _listStory[index]['body'],
+              item.body,
               color: Colors.grey,
               fontSize: 16,
               margin: EdgeInsets.only(left: 20, right: 20),
             ),
           SizedBox(height: 5),
-          Image.network(_listStory[index]['media']),
-          // Container(
-          //   width: double.infinity,
-          //   height: 300,
-          //   decoration: BoxDecoration(
-          //       borderRadius: BorderRadius.circular(20),
-          //       gradient: LinearGradient(
-          //         colors: [Color(0xff294b6b), Color(0xff38a09d)],
-          //         begin: FractionalOffset(0.0, 0.0),
-          //         end: FractionalOffset(0.0, 1.0),
-          //       ),
-          //     image: DecorationImage(
-          //       image: NetworkImage(_listStory[index]['media']),
-          //       // fit: BoxFit.cover
-          //     )
-          //   ),
-          // ),
-          // SizedBox(height: 5),
+          Image.network(item.media),
           Row(
             children: [
               SizedBox(width: 8),
-              IconButton(onPressed: () {}, icon: Icon(Icons.favorite_outlined, color: Colors.red)),
+              IconButton(onPressed: () =>item.isAccountLike?_dislike(index):_like(index), icon: Icon(Icons.favorite_outlined, color: item.isAccountLike?Colors.red:Colors.grey)),
               IconButton(onPressed: () {}, icon: Icon(Icons.mode_comment_outlined, color: Colors.grey)),
               IconButton(onPressed: () {}, icon: Icon(Icons.launch_outlined, color: Colors.grey)),
             ],
           ),
-          TextUI("975.285 lượt thích", color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14, margin: EdgeInsets.only(left: 20, right: 20)),
+          TextUI("${item.like.length} lượt thích", color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14, margin: EdgeInsets.only(left: 20, right: 20)),
           SizedBox(
             height: 3,
           ),
-          Row(
-            children: [
-              TextUI("Thịnh Quốc Trần ", color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14, margin: EdgeInsets.only(left: 20)),
-              TextUI("đẹp quá đi hihihi", color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14),
-              Spacer(),
-              Container(
-                height: 20,
-                child: IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.favorite_outlined,
-                      color: Colors.grey,
-                      size: 15,
-                    )),
-              )
-            ],
-          ),
-          SizedBox(
-            height: 3,
-          ),
-          Row(
-            children: [
-              TextUI("Thịnh Quốc Trần ", color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14, margin: EdgeInsets.only(left: 20)),
-              TextUI("đẹp quá ha hahaha", color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14),
-              Spacer(),
-              Container(
-                height: 20,
-                child: IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.favorite_outlined,
-                      color: Colors.grey,
-                      size: 15,
-                    )),
-              )
-            ],
-          ),
-          SizedBox(
-            height: 3,
-          ),
-          TextUI("xem tất cả 25858 bình luận", color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14, margin: EdgeInsets.only(left: 20, right: 20)),
-          SizedBox(
+           _buildComment(item.comment),
+           SizedBox(
             height: 20,
           )
         ],
       ),
+    );
+  }
+  Widget _buildComment(List<Comment> _listComment){
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: _listComment.length,
+      itemBuilder: (context, index){
+        return Row(
+          children: [
+            TextUI(_listComment[index].user.name, color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14,),
+            TextUI(_listComment[index].body, color: Colors.grey, fontWeight: FontWeight.normal, fontSize: 14),
+            Spacer(),
+            Container(
+              height: 20,
+              child: IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.favorite_outlined,
+                    color: Colors.grey,
+                    size: 15,
+                  )),
+            )
+          ],
+        );
+      },
     );
   }
 }

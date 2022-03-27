@@ -6,6 +6,11 @@ class User {
   User({required this.id, required this.name, required this.photoURL});
   
   factory User.fromMap(dynamic data){
-    return User(id: data['_id'], name: data['name'], photoURL: data['photoURL']);
+    return User(id: data['user_id'], name: data['name'], photoURL: data['photoURL']);
   }
+  toMap() => {
+    'user_id':id,
+    'name':name,
+    'photoURL':photoURL
+  };
 }

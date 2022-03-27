@@ -48,6 +48,12 @@ class DB {
   int getAccountRole(){
     return prefs.getInt('account_role') ?? -1;
   }
+  Future<void> setMapId(String data)async{
+    await prefs.setString('mapId', data);
+  }
+  String getMapId(){
+    return prefs.getString('mapId') ?? "4e5f275107";
+  }
   Future<void> logout()async{
     await prefs.remove('account_name');
     await prefs.remove('account_picture');

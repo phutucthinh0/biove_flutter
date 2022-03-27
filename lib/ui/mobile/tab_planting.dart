@@ -1,5 +1,6 @@
 import 'package:biove/ui/mobile/info_tree.dart';
 import 'package:biove/ui/mobile/planting_place.dart';
+import 'package:biove/ui/mobile/planting_tree.dart';
 import 'package:biove/widgets/text_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class _TabPlantingState extends State<TabPlanting> {
                 ),
                 SizedBox(height: 20),
                 FloatingActionButton.extended(
-                  onPressed: () => Get.to(() => PlantingPlace()),
+                  onPressed: () => Get.to(() => PlantingTree()),
                   label: TextUI("CHỌN CÂY", color: Colors.white,),
                   backgroundColor: Colors.green,
                 ),

@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:intl/intl.dart';
 import 'package:biove/constants/transaction_status.dart';
 import 'package:biove/data/firestore_database.dart';
 import 'package:biove/models/transaction.dart';
@@ -313,7 +313,25 @@ class _BioveTransactionUpdateAdminState extends State<BioveTransactionUpdateAdmi
                         )
                       : Container()
                   ),
-
+                    Obx(() => (TransactionUtils.isBreakPoint(transactionStatus: transactionController.transactionStatus.value))
+                        ? Container(
+                            margin: EdgeInsets.only(top: 20),
+                            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                              TextUI(
+                                'Thời gian',
+                                color: Colors.green,
+                                fontSize: 16,
+                              ),
+                              Spacer(),
+                              TextUI(
+                                DateFormat('HH:mm, d/MM/y').format(widget.transactionModel.date),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ]),
+                          )
+                        : Container()),
                   SizedBox(height: 20),
                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     TextUI(

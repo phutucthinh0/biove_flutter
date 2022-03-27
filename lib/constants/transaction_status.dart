@@ -8,6 +8,7 @@ enum TransactionStatus{
   refuse, // 403
   error, // 500
 }
+
 /*
   Mã:
   100: Giao dịch được khởi tạo
@@ -22,6 +23,7 @@ enum TransactionStatus{
   Các mã breakpoint [Không thể chỉnh sửa khi đã đặt]
   200, 400, 402, 403
  */
+
 class TransactionUtils {
   static int toCode(TransactionStatus transactionStatus){
     switch (transactionStatus){
